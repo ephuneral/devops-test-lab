@@ -11,6 +11,8 @@
 
 ## Архитектура
 
+IP адреса на схеме приведены для примера
+
 ```mermaid
 flowchart LR
     User([Internet])
