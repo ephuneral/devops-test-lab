@@ -46,7 +46,7 @@ flowchart LR
     style NAT3 fill:#ffccbc,stroke:#d84315,stroke-width:2px
 ```
 
-## Структура модуля
+## Структура проекта
 ```
 devops-test-lab/
 ├── terraform/
@@ -56,4 +56,47 @@ devops-test-lab/
 │   └── variables.tf
 ├── .gitignore
 └── README.md
+```
+
+## Быстрый старт
+### Установка зависимостей
+
+Инструкции по установке необходимых инструментов:
+- Terraform: https://developer.hashicorp.com/terraform/install
+- YC CLI: https://yandex.cloud/en/docs/cli/operations/install-cli
+
+### Клонирование репозитория
+```bash
+git clone https://github.com/ephuneral/devops-test-lab.git
+cd devops-test-lab/
+```
+
+### Конфигрурация
+```bash
+# Скопировать шаблон
+cp terraform.tfvars.example terraform.tfvars
+
+# Подставить реальные значения
+nano terraform.tfvars
+```
+
+### Развёртывание
+```bash
+# Инициализация Terraform
+terraform init
+
+# Просмотр плана
+terraform plan
+
+# Применение конфигурации
+terraform apply
+```
+
+### Прсмотр результатов
+```bash
+# Получение IP-адреса master-ноды
+terraform output master_ip
+
+# Получение информации о кластере
+terraform output cluster_info
 ```
