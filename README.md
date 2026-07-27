@@ -97,6 +97,14 @@ terraform apply
 # Получение IP-адреса master-ноды
 terraform output master_ip
 
+# Получение IP-адресов worker-нод
+terraform output worker_ip
+
 # Получение информации о кластере
 terraform output cluster_info
+```
+
+### Удаление
+```bash
+terraform destroy
 ```
