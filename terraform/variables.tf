@@ -4,6 +4,12 @@ variable "zone" {
   default     = "ru-central1-a"
 }
 
+variable "yc_token" {
+  description = "Yandex Cloud IAM token"
+  type        = string
+  sensitive   = true
+}
+
 variable "folder_id" {
   description = "Yandex Cloud folder ID"
   type        = string

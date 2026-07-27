@@ -53,10 +53,18 @@ devops-test-lab/
 │   ├── main.tf
 │   ├── outputs.tf
 │   ├── terraform.tfvars.example
+│   ├── terraform.tf # заполняется вручную
 │   └── variables.tf
+├── ansible/
+│   ├── inventory.ini # генерируется при запуске terraform apply
+│   └── inventory.tpl
 ├── .gitignore
 └── README.md
 ```
+
+## Особенности
+
+- Terraform генерирует файл ```inventory.ini``` в директории ```ansible/```, а также удаляет его при выполнении команды ```terraform destroy```.
 
 ## Быстрый старт
 ### Установка зависимостей
@@ -71,7 +79,7 @@ git clone https://github.com/ephuneral/devops-test-lab.git
 cd devops-test-lab/
 ```
 
-### Конфигрурация
+### Конфигурация
 ```bash
 # Скопировать шаблон
 cp terraform.tfvars.example terraform.tfvars

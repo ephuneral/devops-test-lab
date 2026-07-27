@@ -9,6 +9,7 @@ terraform {
 
 provider "yandex" {
   zone = var.zone
+  token = var.yc_token
 }
 
 resource "yandex_compute_instance" "k3s-node" {
@@ -48,6 +49,14 @@ resource "yandex_compute_instance" "k3s-node" {
   scheduling_policy {
     preemptible = true
   }
+}
+
+resource "local_file" "ansible_inventory" {
+  content = templatefile("${path.module}/../ansible/inventory.tpl", {
+    master_ip = yandex_compute_instance.k3s-node[0].network_interface.0.nat_ip_address
+    worker_ips = [for i in range(1, var.node_count) : yandex_compute_instance.k3s-node[i].network_interface.0.nat_ip_address]
+  })
+filename = "${path.module}/../ansible/inventory.ini"
 }
 
 output "master_ip" {
