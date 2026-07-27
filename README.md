@@ -100,7 +100,7 @@ terraform plan
 terraform apply
 ```
 
-### Прсмотр результатов
+### Просмотр результатов
 ```bash
 # Получение IP-адреса master-ноды
 terraform output master_ip
