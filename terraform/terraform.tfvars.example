@@ -1,0 +1,7 @@
+folder_id          = "b1gxxxxxxxxxxxxxxxxx"
+service_account_id = "ajexxxxxxxxxxxxxxxxxx"
+subnet_id          = "e9uxxxxxxxxxxxxxxxxxx"
+security_group_id  = "enpxxxxxxxxxxxxxxxxxx"
+node_count         = 3
+memory             = 2
+cores              = 2

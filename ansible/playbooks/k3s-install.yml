@@ -1,0 +1,51 @@
+- name: Install k3s cluster
+  hosts: k3s_cluster
+  become: yes
+  vars:
+    k3s_version: "v1.36.2+k3s1"
+
+  tasks:
+    - name: Wait for VMs
+      ansible.builtin.wait_for_connection:
+        delay: 10
+        timeout: 300
+
+    - name: Disable swap
+      ansible.builtin.command: swapoff -a
+      changed_when: false
+
+    - name: Remove swap form fstab
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        regexp: '.*swap.*'
+        state: absent
+
+    - name: Install k3s on master node
+      ansible.builtin.shell: curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{ k3s_version }} sh -
+      args:
+        creates: /usr/local/bin/k3s
+      when: inventory_hostname in groups['k3s_master']
+
+    - name: Wait for k3s to be ready on master node
+      ansible.builtin.wait_for:
+        port: 6443
+        delay: 5
+        timeout: 60
+      when: inventory_hostname in groups['k3s_master']
+
+    - name: Get k3s node token
+      ansible.builtin.command: cat /var/lib/rancher/k3s/server/node-token
+      register: k3s_token_result
+      delegate_to: "{{ groups['k3s_master'][0] }}"
+      run_once: true
+
+    - name: Install k3s on workers
+      ansible.builtin.shell: >
+        curl -sfL https://get.k3s.io |
+        INSTALL_K3S_VERSION={{ k3s_version }}
+        K3S_URL=https://{{ groups['k3s_master'][0] }}:6443
+        K3S_TOKEN={{ k3s_token_result.stdout }}
+        sh -
+      args:
+        creates: /usr/local/bin/k3s
+      when: inventory_hostname in groups['k3s_workers']
