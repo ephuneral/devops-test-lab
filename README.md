@@ -72,9 +72,9 @@ devops-test-lab/
 
 ## Описание работы отдельных модулей
 
-[Terraform](terraform/README.md)
-[Ansible](ansible/README.md)
-[Python-приложение](app/README.md)
+- [**Terraform**](terraform/README.md)
+- [**Ansible**](ansible/README.md)
+  [**Python-приложение**](app/README.md)
 
 ## Установка зависимостей
 
