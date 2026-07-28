@@ -56,10 +56,12 @@ devops-test-lab/
 │   ├── outputs.tf
 │   ├── terraform.tfvars.example
 │   ├── terraform.tf # заполняется вручную
-│   └── variables.tf
+│   ├── variables.tf
+│   └── README.md
 ├── ansible/
 │   ├── inventory.ini # генерируется при запуске terraform apply
 │   ├── inventory.tpl
+│   ├── README.md
 │   └── playbooks/
 │       └── k3s-install.yml   
 ├── app/
