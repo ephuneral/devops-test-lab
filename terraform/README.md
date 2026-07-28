@@ -1,0 +1,122 @@
+# Terraform: Yandex Cloud Infrastructure
+
+Этот модуль описывает и разворачивает базовую инфраструктуру для K8s-кластера (K3s) в Yandex Cloud.
+
+## Архитектура
+
+IP адреса на схеме приведены для примера
+
+```mermaid
+flowchart LR
+    User([Internet])
+
+    subgraph YC[Yandex Cloud · ru-central1-a]
+        subgraph Subnet[Subnet · 192.168.10.0/24]
+            VM1["k3s-node-1<br/>192.168.10.5"]
+            VM2["k3s-node-2<br/>192.168.10.6"]
+            VM3["k3s-node-3<br/>192.168.10.7"]
+        end
+
+        NAT1(("NAT<br/>84.201.x.1"))
+        NAT2(("NAT<br/>84.201.x.2"))
+        NAT3(("NAT<br/>84.201.x.3"))
+    end
+
+    User -->NAT1
+    User -->NAT2
+    User -->NAT3
+
+    NAT1 -->|DNAT| VM1
+    NAT2 -->|DNAT| VM2
+    NAT3 -->|DNAT| VM3
+
+    style User fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    style YC fill:#f1f8e9,stroke:#558b2f,stroke-width:2px
+    style Subnet fill:#fff8e1,stroke:#f9a825,stroke-width:2px
+    style VM1 fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    style VM2 fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    style VM3 fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    style NAT1 fill:#ffccbc,stroke:#d84315,stroke-width:2px
+    style NAT2 fill:#ffccbc,stroke:#d84315,stroke-width:2px
+    style NAT3 fill:#ffccbc,stroke:#d84315,stroke-width:2px
+```
+
+## Требования
+
+- Terraform
+- Yandex Cloud CLI
+
+## Быстрый старт
+
+
+### Подготовка
+
+Авторизоваться в YC CLI и получить IAM-токен:
+
+```bash
+yc init
+yc iam create-token
+export TF_VAR_yc_token="t1.iam_token"
+```
+
+### Конфигурация
+
+Скопировать шаблон и заполнить его реальными значениями из YC:
+
+```bash
+cp terraform.tfvars.example terraform.tfvars
+nano terraform.tfvars
+```
+
+### Развёртывание виртуальных машин
+```bash
+# Инициализация Terraform
+terraform init
+
+# Просмотр плана
+terraform plan
+
+# Применение конфигурации
+terraform apply
+```
+
+### Просмотр результатов
+```bash
+# Получение IP-адреса master-ноды
+terraform output master_ip
+
+# Получение IP-адресов worker-нод
+terraform output worker_ip
+
+# Получение информации о кластере
+terraform output cluster_info
+```
+
+### Развёртывание k3s кластера
+```bash
+cd ansible/
+ansible-playbook playbooks/k3s-install.yml
+```
+
+### Проверка k3s
+```bash
+ssh ubuntu@{*IP мастер ноды*}
+sudo k3s kubectl get nodes -o wide
+```
+
+Ожидаемый вывод:
+```bash
+NAME         STATUS   ROLES           AGE     VERSION        INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION              CONTAINER-RUNTIME
+k3s-node-1   Ready    control-plane   3m4s    v1.36.2+k3s1   10.128.0.10   <none>        Ubuntu 24.04.4 LTS   6.8.0-134-generic (amd64)   containerd://2.3.2-k3s2
+k3s-node-2   Ready    <none>          2m13s   v1.36.2+k3s1   10.128.0.21   <none>        Ubuntu 24.04.4 LTS   6.8.0-134-generic (amd64)   containerd://2.3.2-k3s2
+k3s-node-3   Ready    <none>          2m20s   v1.36.2+k3s1   10.128.0.5    <none>        Ubuntu 24.04.4 LTS   6.8.0-134-generic (amd64)   containerd://2.3.2-k3s2
+```
+
+### Удаление
+```bash
+terraform destroy
+```
+
+## Особенности
+
+- Terraform генерирует файл ```inventory.ini``` в директории ```ansible/```, а также удаляет его при выполнении команды ```terraform destroy```.
