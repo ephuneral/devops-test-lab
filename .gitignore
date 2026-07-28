@@ -5,6 +5,7 @@
 *.tfvars
 !terraform.tfvars.example
 .terraform.lock.hcl
+*.tar
 
 # Ansible
 *.retry
