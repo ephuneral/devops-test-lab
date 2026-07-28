@@ -74,7 +74,7 @@ devops-test-lab/
 
 - [**Terraform**](terraform/README.md)
 - [**Ansible**](ansible/README.md)
-- [**Python-приложение**](app/README.md)
+- [**Python App**](app/README.md)
 
 ## Установка зависимостей
 
