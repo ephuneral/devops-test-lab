@@ -70,12 +70,19 @@ devops-test-lab/
 └── README.md
 ```
 
-## Быстрый старт
-### Установка зависимостей
+## Описание работы отдельных модулей
+
+[Terraform](terraform/README.md)
+[Ansible](ansible/README.md)
+[Python-приложение](app/README.md)
+
+## Установка зависимостей
 
 Инструкции по установке необходимых инструментов:
 - Terraform: https://developer.hashicorp.com/terraform/install
 - YC CLI: https://yandex.cloud/en/docs/cli/operations/install-cli
+
+## Быстрый старт
 
 ### Клонирование репозитория
 ```bash

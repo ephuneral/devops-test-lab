@@ -29,7 +29,7 @@ ansible-playbook playbooks/k3s-install.yml
 
 ```bash
 ssh ubuntu@{*IP мастер ноды*}
-sudo k3s kubectl get nodes -o wid
+sudo k3s kubectl get nodes -o wide
 ```
 
 Ожидаемый вывод:
