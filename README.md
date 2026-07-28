@@ -64,7 +64,8 @@ devops-test-lab/
 │       └── k3s-install.yml   
 ├── app/
 │   ├── main.py
-│   └── requirements.txt
+│   ├── requirements.txt
+│   └── [README.md](https://github.com/)
 ├── .gitignore
 └── README.md
 ```
@@ -139,6 +140,8 @@ k3s-node-3   Ready    <none>          2m20s   v1.36.2+k3s1   10.128.0.5    <none
 ```bash
 terraform destroy
 ```
+
+## Описание 
 
 ## Особенности
 
