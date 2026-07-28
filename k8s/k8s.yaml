@@ -1,0 +1,75 @@
+# Создание неймспейса
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: python-app
+
+# Деплоймент
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app-deployment
+  namespace: python-app
+  labels:
+    app: python-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: python-app
+  template:
+    metadata:
+      labels:
+        app: python-app
+    spec:
+      containers:
+      - name: python-app
+        image: python-k3s-app:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+
+# Сервис (порты)
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-app-service
+  namespace: python-app
+spec:
+  selector:
+    app: python-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+
+# Ингресс
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: python-app-ingress
+  namespace: python-app
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  rules:
+  - host: app.test.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: python-app-service
+            port:
+              number: 80
