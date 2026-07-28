@@ -25,7 +25,7 @@ pip install -r requirements.txt
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-### API Документайия
+### API Документация
 
 FastAPI автоматически генерирует документацию. Доступна по следующим эндпоинтам:
 - ```.../docs```

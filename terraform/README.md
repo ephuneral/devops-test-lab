@@ -1,13 +1,6 @@
-# Yandex Cloud K3s Infrastructure
+# Terraform: Yandex Cloud Infrastructure
 
-Этот модуль автоматизирует создание инфраструктуры для K8s кластера (K3s) в Yandex Cloud с использовнием подхода IaC.
-
-## Назначение 
-
-Модуль создает готовую инфраструктуру для развёртывания K3s кластера:
-- 3 виртуальные машины (1 master + 2 worker nodes)
-- Автогенерация inventory.ini (Ansible)
-- Интеграция с CI/CD
+Этот модуль описывает и разворачивает базовую инфраструктуру для K8s-кластера (K3s) в Yandex Cloud.
 
 ## Архитектура
 
@@ -48,47 +41,30 @@ flowchart LR
     style NAT3 fill:#ffccbc,stroke:#d84315,stroke-width:2px
 ```
 
-## Структура проекта
-```
-devops-test-lab/
-├── terraform/
-│   ├── main.tf
-│   ├── outputs.tf
-│   ├── terraform.tfvars.example
-│   ├── terraform.tf # заполняется вручную
-│   └── variables.tf
-├── ansible/
-│   ├── inventory.ini # генерируется при запуске terraform apply
-│   ├── inventory.tpl
-│   └── playbooks/
-│       └── k3s-install.yml   
-├── app/
-│   ├── main.py
-│   ├── requirements.txt
-│   └── README.md
-├── .gitignore
-└── README.md
-```
+## Требования
+
+- Terraform
+- Yandex Cloud CLI
 
 ## Быстрый старт
-### Установка зависимостей
 
-Инструкции по установке необходимых инструментов:
-- Terraform: https://developer.hashicorp.com/terraform/install
-- YC CLI: https://yandex.cloud/en/docs/cli/operations/install-cli
 
-### Клонирование репозитория
+### Подготовка
+
+Авторизоваться в YC CLI и получить IAM-токен:
+
 ```bash
-git clone https://github.com/ephuneral/devops-test-lab.git
-cd devops-test-lab/
+yc init
+yc iam create-token
+export TF_VAR_yc_token="t1.iam_token"
 ```
 
 ### Конфигурация
-```bash
-# Скопировать шаблон
-cp terraform.tfvars.example terraform.tfvars
 
-# Подставить реальные значения
+Скопировать шаблон и заполнить его реальными значениями из YC:
+
+```bash
+cp terraform.tfvars.example terraform.tfvars
 nano terraform.tfvars
 ```
 
