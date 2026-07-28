@@ -59,14 +59,15 @@ devops-test-lab/
 │   └── variables.tf
 ├── ansible/
 │   ├── inventory.ini # генерируется при запуске terraform apply
-│   └── inventory.tpl
+│   ├── inventory.tpl
+│   └── playbooks/
+│       └── k3s-install.yml   
+├── app/
+│   ├── main.py
+│   └── requirements.txt
 ├── .gitignore
 └── README.md
 ```
-
-## Особенности
-
-- Terraform генерирует файл ```inventory.ini``` в директории ```ansible/```, а также удаляет его при выполнении команды ```terraform destroy```.
 
 ## Быстрый старт
 ### Установка зависимостей
@@ -90,7 +91,7 @@ cp terraform.tfvars.example terraform.tfvars
 nano terraform.tfvars
 ```
 
-### Развёртывание
+### Развёртывание виртуальных машин
 ```bash
 # Инициализация Terraform
 terraform init
@@ -102,7 +103,7 @@ terraform plan
 terraform apply
 ```
 
-### Прсмотр результатов
+### Просмотр результатов
 ```bash
 # Получение IP-адреса master-ноды
 terraform output master_ip
@@ -114,7 +115,31 @@ terraform output worker_ip
 terraform output cluster_info
 ```
 
+### Развёртывание k3s кластера
+```bash
+cd ansible/
+ansible-playbook playbooks/k3s-install.yml
+```
+
+### Проверка k3s
+```bash
+ssh ubuntu@{*IP мастер ноды*}
+sudo k3s kubectl get nodes -o wide
+```
+
+Ожидаемый вывод:
+```bash
+NAME         STATUS   ROLES           AGE     VERSION        INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION              CONTAINER-RUNTIME
+k3s-node-1   Ready    control-plane   3m4s    v1.36.2+k3s1   10.128.0.10   <none>        Ubuntu 24.04.4 LTS   6.8.0-134-generic (amd64)   containerd://2.3.2-k3s2
+k3s-node-2   Ready    <none>          2m13s   v1.36.2+k3s1   10.128.0.21   <none>        Ubuntu 24.04.4 LTS   6.8.0-134-generic (amd64)   containerd://2.3.2-k3s2
+k3s-node-3   Ready    <none>          2m20s   v1.36.2+k3s1   10.128.0.5    <none>        Ubuntu 24.04.4 LTS   6.8.0-134-generic (amd64)   containerd://2.3.2-k3s2
+```
+
 ### Удаление
 ```bash
 terraform destroy
 ```
+
+## Особенности
+
+- Terraform генерирует файл ```inventory.ini``` в директории ```ansible/```, а также удаляет его при выполнении команды ```terraform destroy```.
